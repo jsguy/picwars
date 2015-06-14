@@ -1,0 +1,65 @@
+<html>
+<head>
+	<title>PicWars 0.0.1</title>
+	<script src="mithril/mithril.js"></script>
+	<script src="mithril/mithril.sugartags.js"></script>
+</head>
+<body>
+	<!-- This will simulate a pic war -->
+
+<!--
+	Custom search for images:
+
+	http://www.google.com/cse/manage/all
+
+	Create search engine, "Search all of the iternet", grab CX
+
+	http://stackoverflow.com/questions/6562125/getting-a-cx-id-for-custom-search-google-api-python
+
+	http://codigogenerativo.com/code/google-custom-search-api/
+
+	NOTE: On a free account, you get 100 searches per day.
+	On a paid account, you get 20,000 per year, which is really weird because 356*100 > 20k...
+	
+-->
+
+<div id="target">Loading...</div>
+<script>
+//	Mithril app to load and display thumbnails
+//	from google images based on a query
+
+var app = {
+	controller: function(){
+		var ctrl = this,
+			query = "kitten bowler hat meme",
+			//	This URL can be configured at the google console, to include 
+			url = "https://www.googleapis.com/customsearch/v1"+
+				"?cx=002674927700028218397%3A_qhgxfkouvg"+
+				"&q="+ encodeURIComponent(query)+
+				"&searchType=image&key=AIzaSyCmrN3MhRZzjrk4mGhtHwGJpNLhFSa3i6w";
+
+		ctrl.images = m.request({
+			dataType: "jsonp",
+			url: url
+		});
+
+		return ctrl;
+	},
+	view: function(ctrl){
+		var imgs = ctrl.images().items || [];
+		with(m.sugarTags) {
+			return DIV(
+				imgs.map(function(imgObj){
+					return IMG({src: imgObj.image.thumbnailLink})
+				})
+			)
+		}
+	}
+};
+
+m.mount(document.getElementById("target"), app);
+
+</script>
+
+</body>
+</html>
